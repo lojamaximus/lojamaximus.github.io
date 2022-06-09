@@ -3,14 +3,6 @@ class User{
         this.name = name;
         this.id = id;
     }
-
-    /************
-     * Check on database the user job
-     * using the id
-     */
-    getUserJob(){
-        return "dona";
-    }
 }
 
 var typeOfUsers = {
@@ -22,12 +14,16 @@ var typeOfUsers = {
 }
 
 var userCurrent;
-var storage = firebase.storage();
 var databaseRef = firebase.database();
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
-      checkUserJob(user);
+      if(isUserOnCheckJob()){
+        checkUserJob(user);    
+      } else{
+        isUserOnTheRightPage(user);
+      }
+      
       return;
     }
     else {
@@ -35,6 +31,40 @@ firebase.auth().onAuthStateChanged(user => {
     }
 })
 
-function checkUserJob(){
-    
+function checkUserJob(user){
+    let reference = "Empregados/" + user.uid;
+    databaseRef.ref(reference).once('value', (snapshot) => {
+        let job = snapshot.val().emprego;
+        let path = "$.html";
+        path = path.replace("$", job);
+        window.location.replace(path);
+    });
+}
+
+function isUserOnTheRightPage(user){
+    let reference = "Empregados/" + user.uid;
+    databaseRef.ref(reference).once('value', (snapshot) => {
+        let job = snapshot.val().emprego;
+        console.log(job);
+        let checkPath = '/$.html';
+        checkPath = checkPath.replace("$", job);
+        if( window.location.pathname !== checkPath){
+            console.log(window.location.pathname);
+            console.log(checkPath);
+            userOnWrongPage();
+        }
+
+    });
+}
+
+function isUserOnCheckJob(){
+    let result = false;
+    if( window.location.pathname === '/checkjob.html'){
+      result = true;
+    }
+    return result;
+}
+
+function userOnWrongPage(){
+    console.log("USER ON WRONG PAGE");
 }

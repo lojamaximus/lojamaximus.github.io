@@ -1,11 +1,11 @@
 // FirebaseUI config.
 var uiConfig = {
-    signInSuccessUrl: 'user.html',
+    signInSuccessUrl: 'checkjob.html',
     signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID
     ],
     // Terms of service url.
-    tosUrl: 'user.html'
+    tosUrl: 'checkjob.html'
 };
 
 // Initialize the FirebaseUI Widget using Firebase.
