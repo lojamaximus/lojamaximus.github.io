@@ -87,6 +87,7 @@ var databaseRef = firebase.database();
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
+      userCurrent = user;
       if(isUserOnCheckJob()){
         checkUserJob(user);    
       } else{
@@ -100,13 +101,29 @@ firebase.auth().onAuthStateChanged(user => {
     }
 })
 
+function salvarUsuario(){
+    let reference = "ChecarUsuarios/" + userCurrent.uid;
+    firebase.database().ref(reference).set({
+        nome: userCurrent.displayName,
+        id: userCurrent.uid
+    });
+}
+
+function colocarEmprego(){
+
+}
+
 function checkUserJob(user){
     let reference = "Empregados/" + user.uid;
     databaseRef.ref(reference).once('value', (snapshot) => {
-        let job = snapshot.val().emprego;
-        let path = "$.html";
-        path = path.replace("$", job);
-        window.location.replace(path);
+        try{
+            let job = snapshot.val().emprego;
+            let path = "$.html";
+            path = path.replace("$", job);
+            window.location.replace(path);
+        }catch{
+            console.log("Não tem emprego");
+        }
     });
 }
 
@@ -137,3 +154,8 @@ function isUserOnCheckJob(){
 function userOnWrongPage(){
     console.log("USER ON WRONG PAGE");
 }
+
+/*function salvarIdUsuario(id){
+    let reference = "StudentsInfo/" + id + '/info/id' ;
+    firebase.database().ref(reference).set(userCurrent.uid);
+}*/
