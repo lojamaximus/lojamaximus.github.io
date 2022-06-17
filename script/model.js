@@ -122,7 +122,7 @@ function checkUserJob(user){
             path = path.replace("$", job);
             window.location.replace(path);
         }catch{
-            console.log("Não tem emprego");
+            salvarUsuario();
         }
     });
 }
@@ -130,14 +130,18 @@ function checkUserJob(user){
 function isUserOnTheRightPage(user){
     let reference = "Empregados/" + user.uid;
     databaseRef.ref(reference).once('value', (snapshot) => {
-        let job = snapshot.val().emprego;
-        console.log(job);
-        let checkPath = '/$.html';
-        checkPath = checkPath.replace("$", job);
-        if( window.location.pathname !== checkPath){
-            console.log(window.location.pathname);
-            console.log(checkPath);
-            userOnWrongPage();
+        try{
+            let job = snapshot.val().emprego;
+            console.log(job);
+            let checkPath = '/$.html';
+            checkPath = checkPath.replace("$", job);
+            if( window.location.pathname !== checkPath){
+                console.log(window.location.pathname);
+                console.log(checkPath);
+                userOnWrongPage();
+            }
+        }catch{
+            salvarUsuario();
         }
 
     });
