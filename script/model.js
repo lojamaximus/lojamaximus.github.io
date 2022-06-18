@@ -165,7 +165,7 @@ function isUserOnTheRightPage(user){
                 userOnWrongPage();
             }
         }catch{
-            saveUser();
+            userOnWrongPage();
         }
 
     });
@@ -180,7 +180,7 @@ function isUserOnCheckJob(){
 }
 
 function userOnWrongPage(){
-    console.log("USER ON WRONG PAGE");
+    window.location.replace("espera.html");
 }
 
 /*function salvarIdUsuario(id){
