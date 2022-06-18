@@ -102,7 +102,7 @@ firebase.auth().onAuthStateChanged(user => {
       return;
     }
     else {
-        userNotLogged();
+        userOnWrongPage();
     }
 })
 
