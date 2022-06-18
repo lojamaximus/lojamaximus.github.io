@@ -35,8 +35,13 @@ class Product{
     }
 
     lucroBruto(){
-        return this.pv - this.cmv;
+        return roundMoney(this.pv - this.cmv);
     }
+}
+
+function roundMoney(value){
+    let result = Math.round(value * 100)/100;
+    return result;
 }
 
 class ProductSell{
@@ -101,12 +106,31 @@ firebase.auth().onAuthStateChanged(user => {
     }
 })
 
-function salvarUsuario(){
+function saveUser(){
     let reference = "ChecarUsuarios/" + userCurrent.uid;
     firebase.database().ref(reference).set({
         nome: userCurrent.displayName,
         id: userCurrent.uid
     });
+}
+
+function getInputValue(id){
+    return  document.getElementById(id).value;
+}
+
+function saveProduct(){
+    let name = getInputValue('productName');
+    let pv = roundMoney(getInputValue("productPV"));
+    let cmv = roundMoney(getInputValue("productCMV"));
+    let information = getInputValue("productInformation");
+
+    let product = new Product(name, cmv, pv, information);
+
+    let reference = "Produtos/" + name;
+    firebase.database().ref(reference).set(product);
+
+    //window.alert("Produto: " + name + " salvo com sucesso");
+    
 }
 
 function colocarEmprego(){
@@ -122,7 +146,7 @@ function checkUserJob(user){
             path = path.replace("$", job);
             window.location.replace(path);
         }catch{
-            salvarUsuario();
+            saveUser();
         }
     });
 }
@@ -141,7 +165,7 @@ function isUserOnTheRightPage(user){
                 userOnWrongPage();
             }
         }catch{
-            salvarUsuario();
+            saveUser();
         }
 
     });
