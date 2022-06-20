@@ -27,11 +27,12 @@ class Product{
     //pv = preço de venda
     //information = descrição do produto
 
-    constructor(name, cmv, pv, information){
+    constructor(name, cmv, pv, information, category){
         this.name = name;
         this.cmv = cmv;
         this.pv = pv;
         this.information = information;
+        this.category = category;
     }
 
     lucroBruto(){
@@ -182,8 +183,3 @@ function isUserOnCheckJob(){
 function userOnWrongPage(){
     window.location.replace("espera.html");
 }
-
-/*function salvarIdUsuario(id){
-    let reference = "StudentsInfo/" + id + '/info/id' ;
-    firebase.database().ref(reference).set(userCurrent.uid);
-}*/

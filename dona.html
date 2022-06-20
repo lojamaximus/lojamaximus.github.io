@@ -49,7 +49,10 @@
          <input type="number"  step="0.01" id="productCMV" /> <br />
          <label for="productInformation">Descrição: </label> <br />
          <input type="text" id="productInformation" /> <br />
-
+         <lable for="category">Categoria</lable> <br/>
+         <input type="text" id="category" list="categoryList"/> <br/>
+         <datalist id="categoryList">
+         </datalist>
          <button type="button" onclick="saveProduct()">Salvar Produto</button>
       </div>
    </body>
