@@ -110,7 +110,7 @@ firebase.auth().onAuthStateChanged(user => {
 function saveUser(){
     let reference = "ChecarUsuarios/" + userCurrent.uid;
     firebase.database().ref(reference).set({
-        nome: userCurrent.displayName,
+        name: userCurrent.displayName,
         id: userCurrent.uid
     });
 }
@@ -181,5 +181,5 @@ function isUserOnCheckJob(){
 }
 
 function userOnWrongPage(){
-    window.location.replace("espera.html");
+   window.location.replace("espera.html");
 }
