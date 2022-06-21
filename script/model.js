@@ -14,6 +14,14 @@ class User{
     }
 }
 
+class Worker{
+    constructor(name, id, emprego){
+        this.name = name;
+        this.id = id;
+        this.emprego = emprego;
+    }
+}
+
 var typeOfUsers = {
     "vendedor" : 'vendedor', //Can only send new orders; change the order they received; Put order as fulfilled
     "caixa" : 'caixa', //Can only check the orders and put their payment type 
