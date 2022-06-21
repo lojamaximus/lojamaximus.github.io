@@ -169,8 +169,8 @@ function isUserOnCheckJob(){
 }
 
 function userOnWrongPage(){
-  // window.location.replace("espera.html");
-  console.log("WRONG PAGE");
+  window.location.replace("espera.html");
+  //console.log("WRONG PAGE");
 }
 
 function putList(id, list){
