@@ -57,7 +57,7 @@ function displayProductList(){
     list += "<tr>";
     list += "<th>" + productsList[key].name + "</th>";
     list += "<th> R$ " + productsList[key].cmv.toFixed(2) + "</th>";
-    list += "<th> R$ " + productsList[key].pv.toFixed(2) + "</th>";
+    list += "<th> R$ " + productsList[key].pv + "</th>";
     list += "<th>" + productsList[key].information + "</th>";
     list += "<th>" +  productsList[key].category + "<//th>";
     list += "</tr>";
@@ -136,6 +136,19 @@ function displayWorkersList(){
   putList("workersList", list);
 }
 
-function putList(id, list){
-  document.getElementById(id).innerHTML = list;
+function saveProduct(){
+  let name = getInputValue('productName');
+  let pv = roundMoney(getInputValue("productPV"));
+  let cmv = roundMoney(getInputValue("productCMV"));
+  let information = getInputValue("productInformation");
+  let category = getInputValue("category");
+
+
+  let product = new Product(name, cmv, pv, information, category);
+
+  let reference = "Produtos/" + name;
+  firebase.database().ref(reference).set(product);
+
+  //window.alert("Produto: " + name + " salvo com sucesso");
+  
 }

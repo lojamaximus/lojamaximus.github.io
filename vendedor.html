@@ -4,6 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
       <title>Loja Maximus</title>
+      <link href="style/main.css" rel="stylesheet" type="text/css" />      
             
    </head>
    <body>
@@ -13,7 +14,23 @@
       <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
       <script src="script/firebase.js"></script>
       <script src="script/model.js"></script>
+      <script src="script/vendedorModel.js"></script>
 
-      <h1>Vendedor</h1>
+
+      <h1>Vendedor</h1> <br />
+      <label for="clientName">Nome do client: </label> <br />
+      <input type="text" id="clientName" /> <br />
+
+      <div id="listaProdutos">
+
+      </div>
+
+      <div>
+
+         <p id="sellPrice"> Preço Total: </p>
+         <button onclick="checarCompra()">CHECAR PREÇO </button>
+         <br /> <br /> <br />
+         <button onclick="comprar()">COMPRAR</button>
+      </div>
    </body>
 </html>

@@ -79,21 +79,17 @@ class PaymentType{
  * O horário de pagamento deve ser automático
  */
 class Pedidos{
-    constructor(sellerName, clientName, paymentType, productsList, paymentTime){
+    constructor(sellerName, clientName, paymentType, productsList, paymentTime, totalValue, id){
         this.sellerName = sellerName;
         this.clientName = clientName;
         this.paymentType = paymentType;
         this.productsList = productsList;
         this.paymentTime = paymentTime;
+        this.totalValue = totalValue;
+        this.id = id;
     }
 
-    set paymentType(newPaymentType){
-        if (newPaymentType === null 
-            || (newPaymentType.length === 0)){
-            alert("Selecione a forma de pagamento");
-        }
-        this.paymentType = newPaymentType;
-    }
+
 }
 
 var userCurrent;
@@ -127,20 +123,6 @@ function getInputValue(id){
     return  document.getElementById(id).value;
 }
 
-function saveProduct(){
-    let name = getInputValue('productName');
-    let pv = roundMoney(getInputValue("productPV"));
-    let cmv = roundMoney(getInputValue("productCMV"));
-    let information = getInputValue("productInformation");
-
-    let product = new Product(name, cmv, pv, information);
-
-    let reference = "Produtos/" + name;
-    firebase.database().ref(reference).set(product);
-
-    //window.alert("Produto: " + name + " salvo com sucesso");
-    
-}
 
 function colocarEmprego(){
 
@@ -189,5 +171,10 @@ function isUserOnCheckJob(){
 }
 
 function userOnWrongPage(){
-   window.location.replace("espera.html");
+  // window.location.replace("espera.html");
+  console.log("WRONG PAGE");
+}
+
+function putList(id, list){
+    document.getElementById(id).innerHTML = list;
 }
