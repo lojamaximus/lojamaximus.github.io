@@ -77,8 +77,6 @@ function checarCompra(){
 }
 
 function comprar(){
-    console.log(pedido[getInputValue("clientName")]);
-    console.log(getInputValue("clientName"));
     try{
         if(pedido[getInputValue("clientName")].clientName == getInputValue("clientName")
         && getInputValue("clientName") != ""){

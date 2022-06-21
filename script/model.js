@@ -88,8 +88,6 @@ class Pedidos{
         this.totalValue = totalValue;
         this.id = id;
     }
-
-
 }
 
 var userCurrent;

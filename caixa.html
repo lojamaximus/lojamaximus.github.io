@@ -4,7 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
       <title>Financeiro</title>
-            
+      <link href="style/main.css" rel="stylesheet" type="text/css" />      
    </head>
    <body>
       <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -16,5 +16,16 @@
       <script src="script/caixaModel.js"></script>
 
       <h1>Caixa</h1>
+      <div>
+         <table id="pedidosList">
+            <tr>
+               <th>Pedido do Cliente</th>
+               <th>Lista de Produtos</th>
+               <th>Preço Total</th>
+               <th>Metodo De Pagamento</th>
+               <th>Confirmar Pagamento</th>
+            </tr>
+         </table>
+      </div>
    </body>
 </html>
