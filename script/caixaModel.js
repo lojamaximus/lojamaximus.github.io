@@ -15,10 +15,9 @@ pedidosListener.on('value', (snapshot) => {
       let info = childSnapshot.val();
       
       if(info.paymentType == "checar"){
-        console.log(info.id);
         pedidosList[info.id] = new Pedidos( info.sellerName,
           info.clientName, info.paymentType, info.productsList, 
-          info.paymentTime, info.totalValue, info.id);
+          info.paymentTime, info.totalValue, info.id, info.sent);
       }
     });
     displayPedidosList()

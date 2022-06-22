@@ -4,6 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
       <title>Financeiro</title>
+      <link href="style/main.css" rel="stylesheet" type="text/css" />
             
    </head>
    <body>
@@ -13,7 +14,24 @@
       <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
       <script src="script/firebase.js"></script>
       <script src="script/model.js"></script>
+      <script src="script/alarm.js"></script>
+      <script src="script/cozinhaModel.js"></script>
 
       <h1>Cozinha</h1>
+
+      <button type="button" id="alarmButton" class="off" onclick="turnAlarmOnOrOff()">
+         LIGAR ALARME
+      </button>
+
+      <div>
+         <table id="pedidosList">
+
+         </table>
+      </div>
+
+      <audio controls class="hide" id="alarm">
+         <source src="alarme.mp3" type="audio/mpeg">
+         Your browser does not support the audio element.
+       </audio>
    </body>
 </html>

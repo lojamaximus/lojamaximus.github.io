@@ -1,3 +1,11 @@
+function getReference(){
+    const date = new Date();
+    let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);
+    reference += "/" + date.getDate();
+    return reference;
+}
+
+
 var productsListener = firebase.database().ref('Produtos/');
 productsListener.on('value', (snapshot) => {
     snapshot.forEach(function (childSnapshot) {
@@ -9,8 +17,71 @@ productsListener.on('value', (snapshot) => {
     displayProductList();
 });
 
+var pedidosListener = firebase.database().ref(getReference());
+pedidosListener.on('value', (snapshot) => {
+    snapshot.forEach(function (childSnapshot) {
+      let info = childSnapshot.val();
+      
+
+      if(info.withClient === false 
+        && (info.sellerName == userCurrent.displayName)
+        && (info.sent === true)){
+        try{
+            if(isAlarmOn){
+                if(sendList[info.id].withClient  == false){
+                    //already Exist
+                }    
+            }
+        }catch{
+            if(isAlarmOn){
+                playAlarm();
+            }
+        }
+      
+        sendList[info.id] = new Pedidos( info.sellerName,
+          info.clientName, info.paymentType, info.productsList, 
+          info.paymentTime, info.totalValue, info.id, info.sent, info.withClient);
+      }
+    });
+    displaySendList();
+});
+
 var productsList = {};
 var categoryList = {};
+
+var sendList = {};
+
+function displaySendList(){
+    let list = " <tr> <th>Pedido do Cliente</th> <th>Lista de Produtos</th>";
+    list += "<th>Enviar Pedido</th></tr>";
+    for( key in sendList){
+      list += "<tr>";
+      list += "<th>" + sendList[key].clientName + "</th>";
+      list += "<th>";
+      for(key2 in sendList[key].productsList){
+        list += sendList[key].productsList[key2].name;
+        list += " ( " + sendList[key].productsList[key2].quantity +" ) <br />";
+      }
+      list += "</th>";
+      list += "<th> <button type='button' onclick=\'enviarPedido(\"" + sendList[key].id + "\")\'>"
+      list += "PEDIDO ENTREGUE</button></th>";
+      list += "</tr>";
+    }
+  
+    putList("entregaPronta", list);
+}
+
+function enviarPedido(id){
+    const date = new Date();
+    let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);
+    reference += "/" + date.getDate() + "/" + id;
+
+    sendList[id].withClient = true;
+  
+    firebase.database().ref(reference).set(sendList[id]);
+    delete sendList[id];
+    displaySendList();
+}
 
 function displayProductList(){
     let list = "";
@@ -45,7 +116,6 @@ function checarCompra(){
     let sellList = {};
     for(key in productsList){
         if(getInputValue(key) > 0){
-            console.log(getInputValue(key));
             sellList[key] = new ProductSell(productsList[key].name,
                 productsList[key].pv, productsList[key].information,
                 getInputValue(key));
@@ -62,7 +132,6 @@ function checarCompra(){
     paymentTime += date.getMinutes();
 
     let totalValue = 0;
-    console.log(sellList);
     for(key in sellList){
         totalValue += sellList[key].sellPrice();
     }
@@ -71,9 +140,8 @@ function checarCompra(){
     putList("sellPrice", list);
 
     pedido[getInputValue("clientName")] = new Pedidos(userCurrent.displayName,
-         getInputValue("clientName"), "checar", sellList, paymentTime, totalValue, "1");
-
-    console.log(pedido);
+         getInputValue("clientName"), "checar",
+          sellList, paymentTime, totalValue, "1", false, false);
 }
 
 function comprar(){
@@ -99,6 +167,6 @@ function comprar(){
         }
     }
     catch{
-        console.log("Pedido vazio");
+        alert("Nome do cliente está vazio");
     }
 }

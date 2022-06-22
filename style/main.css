@@ -1,3 +1,17 @@
 table, th, td {
     border: 2px solid;
 }
+
+.hide{
+    display: none;
+}
+
+.on{
+    background-color: greenyellow;
+    color: black;
+}
+
+.off{
+    background-color: red;
+    color: white;
+}

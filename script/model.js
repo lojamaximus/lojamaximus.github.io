@@ -79,7 +79,7 @@ class PaymentType{
  * O horário de pagamento deve ser automático
  */
 class Pedidos{
-    constructor(sellerName, clientName, paymentType, productsList, paymentTime, totalValue, id){
+    constructor(sellerName, clientName, paymentType, productsList, paymentTime, totalValue, id, sent, withClient){
         this.sellerName = sellerName;
         this.clientName = clientName;
         this.paymentType = paymentType;
@@ -87,6 +87,8 @@ class Pedidos{
         this.paymentTime = paymentTime;
         this.totalValue = totalValue;
         this.id = id;
+        this.sent = sent;
+        this.withClient = withClient;
     }
 }
 
@@ -121,11 +123,6 @@ function getInputValue(id){
     return  document.getElementById(id).value;
 }
 
-
-function colocarEmprego(){
-
-}
-
 function checkUserJob(user){
     let reference = "Empregados/" + user.uid;
     databaseRef.ref(reference).once('value', (snapshot) => {
@@ -145,12 +142,9 @@ function isUserOnTheRightPage(user){
     databaseRef.ref(reference).once('value', (snapshot) => {
         try{
             let job = snapshot.val().emprego;
-            console.log(job);
             let checkPath = '/$.html';
             checkPath = checkPath.replace("$", job);
             if( window.location.pathname !== checkPath){
-                console.log(window.location.pathname);
-                console.log(checkPath);
                 userOnWrongPage();
             }
         }catch{
@@ -170,7 +164,6 @@ function isUserOnCheckJob(){
 
 function userOnWrongPage(){
   window.location.replace("espera.html");
-  //console.log("WRONG PAGE");
 }
 
 function putList(id, list){
