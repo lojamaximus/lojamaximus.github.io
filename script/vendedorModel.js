@@ -1,3 +1,14 @@
+/************
+ * To-do: 1- Criar um carrinho para o site
+ *  2- Criar botão para adicionar o produto ao carrinho (para cada produto, com excessão de acompanhamentos)
+ * 
+ *  3- Quando clicar no botão de adicionar ao carrinho, caso seja um produto que aceite acompanhamento,
+ *     fazer aparecer uma tabela na frente de tudo, com a lista de acompanhamentos que o cliente pode escolher
+ * 
+ *  4- Criar um botão de carrinho, onde ao clicar nele o cliente pode ver tudo que já escolheu junto de 
+ *     quanto está custando o pedido
+ */
+
 function getReference(){
     const date = new Date();
     let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);

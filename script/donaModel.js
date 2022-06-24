@@ -52,7 +52,8 @@ function putCategoryList(){
 
 function displayProductList(){
   let list = " <tr> <th>Nome</th> <th>CMV: Custo Mercadoria</th>";
-  list += "<th>Preço de Venda</th> <th>Descrição</th> <th>Categoria</th></tr>";
+  list += "<th>Preço de Venda</th> <th>Descrição</th> <th>Categoria</th>";
+  list += " <th>Acompanhamento</th> <th>Categoria de acompanhamento</th> </tr>"
   for( key in productsList){
     list += "<tr>";
     list += "<th>" + productsList[key].name + "</th>";
@@ -60,6 +61,8 @@ function displayProductList(){
     list += "<th> R$ " + productsList[key].pv + "</th>";
     list += "<th>" + productsList[key].information + "</th>";
     list += "<th>" +  productsList[key].category + "<//th>";
+    list += "<th>" + productsList[key].sideDish + "</th>";
+    list += "<th>" + productsList[key].sideDishCategory + "</th>";
     list += "</tr>";
   }
 
@@ -147,8 +150,5 @@ function saveProduct(){
   let product = new Product(name, cmv, pv, information, category);
 
   let reference = "Produtos/" + name;
-  firebase.database().ref(reference).set(product);
-
-  //window.alert("Produto: " + name + " salvo com sucesso");
-  
+  firebase.database().ref(reference).set(product);  
 }

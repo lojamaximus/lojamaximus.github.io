@@ -26,6 +26,8 @@
                <th>Preço de Venda</th>
                <th>Descrição</th>
                <th>Categoria</th>
+               <th>Acompanhamento</th>
+               <th>Categoria de acompanhamento</th>
             </tr>
          </table>
       </div>
@@ -52,6 +54,17 @@
          <lable for="category">Categoria</lable> <br/>
          <input type="text" id="category" list="categoryList"/> <br/>
          <datalist id="categoryList">
+         </datalist>
+         <select id="isHasSideDish">
+            <option value="doNotHave">Não é e não possúi acompanhamento</option>
+            <option value="itIs">É um acompanhamento</option>
+            <option value="itHas">Tem acompanhamentos</option>
+         </select>
+         <label for="sideDishCategory">Nome da categoria de acompanhamento. <br/>
+            <strong> Só coloque se é ou tem acompanhamento </strong>
+         </label>  <br/>
+         <input type="text" id="sideDishCategory" list="sideDishCategory"/> <br />
+         <datalist id="sideDishCategory">
          </datalist>
          <button type="button" onclick="saveProduct()">Salvar Produto</button>
       </div>
