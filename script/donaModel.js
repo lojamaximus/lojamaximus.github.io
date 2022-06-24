@@ -145,9 +145,16 @@ function saveProduct(){
   let cmv = roundMoney(getInputValue("productCMV"));
   let information = getInputValue("productInformation");
   let category = getInputValue("category");
+  let sideDish = getInputValue("isHasSideDish");
+  let sideDishCategory = getInputValue("sideDishCategory");
+
+  if(sideDish == "doNotHave"){
+    sideDishCategory = " ";
+  }
 
 
-  let product = new Product(name, cmv, pv, information, category);
+  let product = new Product(name, cmv, pv,
+     information, category, sideDish, sideDishCategory);
 
   let reference = "Produtos/" + name;
   firebase.database().ref(reference).set(product);  

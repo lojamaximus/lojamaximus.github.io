@@ -35,12 +35,14 @@ class Product{
     //pv = preço de venda
     //information = descrição do produto
 
-    constructor(name, cmv, pv, information, category){
+    constructor(name, cmv, pv, information, category, sideDish, sideDishCategory){
         this.name = name;
         this.cmv = cmv;
         this.pv = pv;
         this.information = information;
         this.category = category;
+        this.sideDish = sideDish;
+        this.sideDishCategory = sideDishCategory;
     }
 
     lucroBruto(){
