@@ -1,12 +1,3 @@
-/******************************
- * Funcionarios só podem ver o preço de venda e descrição do produto
- * Eles não podem ver o cmv ou lucro bruto
- * 
- * Os pedidos dos clientes devem ir direto para a cozinha assim que o pedido for feito.
- * 
- * Colocar barulho quando chegar o pedido
- */
-
 class User{
     constructor(name, id){
         this.name = name;
@@ -56,15 +47,24 @@ function roundMoney(value){
 }
 
 class ProductSell{
-    constructor(name, pv, information, quantity){
+    constructor(name, pv, information, quantity, sideDishList, id){
         this.name = name;
         this.pv = pv;
         this.information = information;
         this.quantity = quantity;
+        this.sideDishList = sideDishList;
+        this.id = id;
     }
 
     sellPrice(){
-        return this.pv * this.quantity;
+        let price = 0;
+        if(getListSize(this.sideDishList) > 0){
+            for(let x in this.sideDishList){
+                price += this.sideDishList[x].pv * this.sideDishList[x].quantity;
+            }
+        }
+        price += this.pv * this.quantity; 
+        return price;
     }
 }
 
@@ -91,6 +91,10 @@ class Pedidos{
         this.id = id;
         this.sent = sent;
         this.withClient = withClient;
+    }
+
+    removeProduct(id){
+        delete this.productsList[id];
     }
 }
 
@@ -170,4 +174,16 @@ function userOnWrongPage(){
 
 function putList(id, list){
     document.getElementById(id).innerHTML = list;
+}
+
+function hideTag(id){
+    document.getElementById(id).classList.add('hide');
+}
+  
+function appearTag(id){
+    document.getElementById(id).classList.remove('hide');
+}
+
+function getListSize(list){
+    return Object.keys(list).length;
 }

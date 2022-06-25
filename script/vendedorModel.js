@@ -1,14 +1,3 @@
-/************
- * To-do: 1- Criar um carrinho para o site
- *  2- Criar botão para adicionar o produto ao carrinho (para cada produto, com excessão de acompanhamentos)
- * 
- *  3- Quando clicar no botão de adicionar ao carrinho, caso seja um produto que aceite acompanhamento,
- *     fazer aparecer uma tabela na frente de tudo, com a lista de acompanhamentos que o cliente pode escolher
- * 
- *  4- Criar um botão de carrinho, onde ao clicar nele o cliente pode ver tudo que já escolheu junto de 
- *     quanto está custando o pedido
- */
-
 function getReference(){
     const date = new Date();
     let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);
@@ -21,9 +10,14 @@ var productsListener = firebase.database().ref('Produtos/');
 productsListener.on('value', (snapshot) => {
     snapshot.forEach(function (childSnapshot) {
       let info = childSnapshot.val();
-      productsList[info.name] = new Product(info.name, 0,
-         info.pv, info.information, info.category);
-      categoryList[info.category] = info.category;
+      if(info.sideDish == "itIs"){
+        sideDishList[info.name] = new Product(info.name, 0,
+            info.pv, info.information, info.category, info.sideDish, info.sideDishCategory);
+      } else {
+        productsList[info.name] = new Product(info.name, 0,
+            info.pv, info.information, info.category, info.sideDish, info.sideDishCategory);
+        categoryList[info.category] = info.category;       
+      }
     });
     displayProductList();
 });
@@ -59,17 +53,93 @@ pedidosListener.on('value', (snapshot) => {
 
 var productsList = {};
 var categoryList = {};
-
 var sendList = {};
+var sideDishList = {};
+var sideDishCategoryList = {};
+
+var cart = {};
+var pedido = {};
+
+function closeCart(){
+    hideTag("cart");
+    appearTag("content");
+    showCartSize();
+}
+
+function openCart(){
+    hideTag("content");
+    appearTag("cart");
+    displayCartContent();
+}
+
+function closeSideDish(){
+    hideTag("sideDish");
+    appearTag("content");
+    for(let key in sideDishCategoryList){
+        delete sideDishCategoryList[key];
+    }
+}
+
+function openSideDish(id, cartId){
+    hideTag("content");
+    appearTag("sideDish");
+    displaySideDishList(id, cartId);
+}
+
+function displayCartContent(){
+    let price = 0;
+    let list = " <table> <tr> <th>Nome</th> <th>Quantidade</th>";
+    list += "<th> Acompanhamentos </th> <th>Preço</th> <th>Remover</th></tr>";
+
+    for(let key in cart){
+        console.log(cart[key]);
+        price += cart[key].sellPrice();
+        console.log(cart[key]);
+        list += "<tr>";
+        list += "<th> " + cart[key].name + "</th>";
+        list += "<th> " + cart[key].quantity + "</th>";
+        list += "<th>";
+        if(getListSize(cart[key].sideDishList) > 0){
+            for(let key2 in cart[key].sideDishList){
+                list += cart[key].sideDishList[key2].name;
+                list += " ( " + cart[key].sideDishList[key2].quantity;
+                list += " ) ";
+                list += "<button type='button'";
+                list +=" onclick=\'removeSideDishFromCart(\"" + key +"\", \""+ key2 +"\")\'>";
+                list += "<i class='glyphicon glyphicon-minus'></i></button> <br />";
+            }
+        }
+        list += "</th>";
+        list += "<th> R$ " + cart[key].sellPrice().toFixed(2) + "</th>";
+        list += "<th>";
+        list += "<button type='button' onclick=\'removeFromCart(\"" + key + "\")\'>";
+        list += "<i class='glyphicon glyphicon-minus'></i></button>";
+        list += "</th>";
+        list += "</tr>";
+    }
+    list += "</table> <br/>";
+    list += "<p> Preço total: R$ " + price.toFixed(2) + "</p>";
+    putList("cartContent",list);
+}
+
+function getUniqueID() {
+    return Math.floor(Math.random() * Date.now())
+}
+
+
+function removeFromCart(id){
+    delete cart[id];
+    displayCartContent();
+}
 
 function displaySendList(){
     let list = " <tr> <th>Pedido do Cliente</th> <th>Lista de Produtos</th>";
     list += "<th>Enviar Pedido</th></tr>";
-    for( key in sendList){
+    for( let key in sendList){
       list += "<tr>";
       list += "<th>" + sendList[key].clientName + "</th>";
       list += "<th>";
-      for(key2 in sendList[key].productsList){
+      for( let key2 in sendList[key].productsList){
         list += sendList[key].productsList[key2].name;
         list += " ( " + sendList[key].productsList[key2].quantity +" ) <br />";
       }
@@ -94,6 +164,50 @@ function enviarPedido(id){
     displaySendList();
 }
 
+function putSideDishCategoryList(productId){
+    for( let key in sideDishList){
+        if(sideDishList[key].sideDishCategory 
+            == productsList[productId].sideDishCategory){
+            sideDishCategoryList[sideDishList[key].category] =
+                sideDishList[key].category;
+        }
+    }
+}
+
+function displaySideDishList(productId, cartId){
+    putSideDishCategoryList(productId);
+    let list = "";
+    for (let key in sideDishCategoryList){
+        list += "<h2>" + sideDishCategoryList[key] + "</h2>";
+        list += "<table id='"+ sideDishCategoryList[key] +"'>";
+         list += "<tr>";
+        list += "<th> Produto </th>";
+        list += "<th> Preço </th>";
+        list += "<th> Descrição </th>";
+        list += "<th> Quantidade </th>";
+        list += "<th> Adicionar </th>";
+        list += "</tr>";
+        for(let key2 in sideDishList){
+            list += "<tr>";
+            if(sideDishList[key2].category == sideDishCategoryList[key]){
+                list += "<th>" + sideDishList[key2].name + "</th>";
+                list += "<th> R$ " + sideDishList[key2].pv.toFixed(2) + "</th>";
+                list += "<th>" + sideDishList[key2].information + "</th>";
+                list += "<th> <input type='number' value='1' min='1' max='99'" 
+                list += " id='" + key2 + "'> </th>"; 
+                list += "<th>"
+                list += "<button type='button' onclick=\'addToSideDishCart(\"" +  cartId + "\",\""+key2 + "\")\'>"
+                list += "<i class='glyphicon glyphicon-plus'></i></button>";
+                list += "</th>"
+            }
+            list += "</tr>";
+        }
+        list += "</table>";
+        list += "<br />";
+    }
+    putList('sideDishContent', list);
+}
+
 function displayProductList(){
     let list = "";
     for (key in categoryList){
@@ -104,14 +218,20 @@ function displayProductList(){
         list += "<th> Preço </th>";
         list += "<th> Descrição </th>";
         list += "<th> Quantidade </th>";
+        list += "<th> Adicionar </th>";
         list += "</tr>";
-        for(key2 in productsList){
+        for(let key2 in productsList){
             list += "<tr>";
             if(productsList[key2].category == categoryList[key]){
                 list += "<th>" + productsList[key2].name + "</th>";
                 list += "<th> R$ " + productsList[key2].pv.toFixed(2) + "</th>";
                 list += "<th>" + productsList[key2].information + "</th>";
-                list += "<th> <input type='number' value='0' id='" + key2 + "'> </th>"; 
+                list += "<th> <input type='number' value='1' min='1' max='99'" 
+                list += " id='" + key2 + "'> </th>"; 
+                list += "<th>"
+                list += "<button type='button' onclick=\'addToCart(\"" + key2 + "\")\'>"
+                list += "<i class='glyphicon glyphicon-plus'></i></button>";
+                list += "</th>"
             }
             list += "</tr>";
         }
@@ -121,63 +241,103 @@ function displayProductList(){
     putList('listaProdutos', list);
 }
 
-var pedido = {};
+function showCartSize(){
+    document.getElementById("cartSize").innerHTML = getListSize(cart);
+}
 
-function checarCompra(){
-    let sellList = {};
-    for(key in productsList){
-        if(getInputValue(key) > 0){
-            sellList[key] = new ProductSell(productsList[key].name,
-                productsList[key].pv, productsList[key].information,
-                getInputValue(key));
-        }
+function addToCart(id){
+    let cartId = productsList[id].name + getUniqueID();
+    cart[cartId] = new ProductSell(productsList[id].name,
+        productsList[id].pv, productsList[id].information,
+        getInputValue(productsList[id].name), {}, cartId);
+    document.getElementById(productsList[id].name).value = 1;
+    showCartSize();
+    if(productsList[id].sideDish == "itHas"){
+        openSideDish(id, cartId);
     }
+}
 
-    const date = new Date();
-    let paymentTime = "";
-    paymentTime += date.getDate() + ".." + (date.getMonth() + 1) +".." + date.getFullYear();
-    paymentTime += " às " +  date.getHours() + ":";
-    if(date.getMinutes() < 10){
-        paymentTime += "0"
-    } 
-    paymentTime += date.getMinutes();
+function addToSideDishCart(cartId, sideDishId){
+    cart[cartId].sideDishList[sideDishId] = new ProductSell(
+            sideDishList[sideDishId].name,
+             sideDishList[sideDishId].pv,
+             sideDishList[sideDishId].information,
+             getInputValue(sideDishId),
+             {}, sideDishId
+        );
+}
 
-    let totalValue = 0;
-    for(key in sellList){
-        totalValue += sellList[key].sellPrice();
-    }
-
-    let list = "Prelo Total R$" + totalValue.toFixed(2);
-    putList("sellPrice", list);
-
-    pedido[getInputValue("clientName")] = new Pedidos(userCurrent.displayName,
-         getInputValue("clientName"), "checar",
-          sellList, paymentTime, totalValue, "1", false, false);
+function removeSideDishFromCart(cartId, sideDishId){
+    delete cart[cartId].sideDishList[sideDishId];
+    displayCartContent();
 }
 
 function comprar(){
-    try{
-        if(pedido[getInputValue("clientName")].clientName == getInputValue("clientName")
-        && getInputValue("clientName") != ""){
-            const date = new Date();
-            let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);
-            reference += "/" + date.getDate() + "/" + getInputValue("clientName");
-            reference += pedido[getInputValue("clientName")].totalValue;
-            reference += date.getHours();
-            reference += date.getMinutes();
-            reference += date.getSeconds();
-            reference += date.getMilliseconds();
+    if(checarCompra()){
+        const date = new Date();
+        let id = userCurrent.displayName + getInputValue("clientName") + getUniqueID();
+        let reference = "Pedidos/" + date.getFullYear() +"/" + (date.getMonth() + 1);
+        reference += "/" + date.getDate() + "/" + id;
 
-            let idArray = reference.split("/");
-            let id = idArray[(idArray.length - 1)];
-            pedido[getInputValue("clientName")].id = id;
-            firebase.database().ref(reference).set(pedido[getInputValue("clientName")]);
-            document.getElementById("clientName").value = "";
-        }else{
-            alert("Nome do cliente está vazio");
+        let paymentTime = "";
+        paymentTime += date.getDate() + ".." + (date.getMonth() + 1) +".." + date.getFullYear();
+        paymentTime += " às " +  date.getHours() + ":";
+        if(date.getMinutes() < 10){
+            paymentTime += "0"
+        } 
+        paymentTime += date.getMinutes();
+
+        let totalValue = 0;
+        for(let key in cart){
+            totalValue += cart[key].sellPrice();
         }
-    }
-    catch{
-        alert("Nome do cliente está vazio");
+
+        let paymentType = {};
+        paymentType["checar"] = new PaymentType("checar", 0);
+
+        pedido[id] = new Pedidos(userCurrent.displayName,
+            getInputValue("clientName"), paymentType,
+             cart, paymentTime, totalValue, id, false, false);
+
+        firebase.database().ref(reference).set(pedido[id]);
+        document.getElementById("clientName").value = "";
+        for(let key in cart){
+            delete cart[key];
+        }
+        closeCart();
     }
 }
+
+function checarCompra(){
+    if(getInputValue("clientName") == ""){
+        window.alert("Nome do cliente está vazio");
+        return false;
+    }
+
+    if(getListSize(cart) <= 0){
+        window.alert("Carrinho está vazio");
+        return false;
+    }
+
+    openCart();
+    return true;
+}
+
+/*function testUniqueId(){
+    let list = {};
+    let id = "1";
+
+    for(let i =0; i < 999999; i++){
+        id = getUniqueID();
+        if(list[id] != null){
+            console.log ("ID: "+ id + "JÁ EXISTE")
+        }
+        list[id] = id;
+    }
+
+    console.log("FIM DO TEST");
+    console.log(getListSize(list));
+
+}
+
+testUniqueId();*/

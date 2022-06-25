@@ -1,5 +1,29 @@
+body, html{
+    height: 100%;
+    margin:0;
+    margin-left: 5px;
+    margin-right: 5px;
+	padding:0;
+}
+
 table, th, td {
     border: 2px solid;
+}
+
+#cart, #sideDish{
+    height: 100%;
+    width: 95%;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+	left:0;
+}
+
+#cartButton{
+    position: fixed;
+    z-index: 2;
+    top: 10px;
+    right: 15px;
 }
 
 .hide{

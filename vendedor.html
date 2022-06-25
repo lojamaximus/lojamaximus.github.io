@@ -5,7 +5,7 @@
       <meta name="viewport" content="width=device-width">
       <title>Loja Maximus</title>
       <link href="style/main.css" rel="stylesheet" type="text/css" />      
-            
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">       
    </head>
    <body>
       <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -17,12 +17,34 @@
       <script src="script/alarm.js"></script>
       <script src="script/vendedorModel.js"></script>
 
+      <div id="cart" class="hide">
+         <i class="glyphicon glyphicon-remove close" onclick="closeCart()"></i>
+         <div id="cartContent">
 
+         </div>
+         <button onclick="comprar()">COMPRAR</button>
+      </div>
+
+      <div id="sideDish" class="hide">
+         <i class="glyphicon glyphicon-remove close" onclick="closeSideDish()"></i>
+         <div id="sideDishContent">
+
+         </div>
+      </div>
+
+      <div id="content" class="">
+         <div>
+            <button type="button" onclick="openCart()" id="cartButton">
+               <i class="glyphicon glyphicon-shopping-cart" id="cartSize">0</i>
+            </button>
+         </div>
       <h1>Vendedor</h1> <br />
 
       <button type="button" id="alarmButton" class="off" onclick="turnAlarmOnOrOff()">
          LIGAR ALARME
-      </button> <br />
+      </button> 
+      <br />
+      <br />
 
       <div>
          <table id="entregaPronta">
@@ -30,6 +52,7 @@
          </table>
       </div>
       <br />
+
       <label for="clientName">Nome do client: </label> <br />
       <input type="text" id="clientName" /> <br />
 
@@ -38,16 +61,13 @@
       </div>
 
       <div>
-
-         <p id="sellPrice"> Preço Total: </p>
-         <button onclick="checarCompra()">CHECAR PREÇO </button>
-         <br /> <br /> <br />
-         <button onclick="comprar()">COMPRAR</button>
+         <button onclick="checarCompra()">COMPRAR</button>
       </div>
       
       <audio controls class="hide" id="alarm">
          <source src="alarme.mp3" type="audio/mpeg">
          Your browser does not support the audio element.
        </audio>
+      </div>
    </body>
 </html>

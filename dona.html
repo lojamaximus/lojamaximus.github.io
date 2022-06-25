@@ -5,6 +5,7 @@
       <meta name="viewport" content="width=device-width">
       <title>Financeiro</title>
       <link href="style/main.css" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">       
    </head>
    <body>
       <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
@@ -46,25 +47,26 @@
          <label for="productName">Nome: </label> <br />
          <input type="text" id="productName" /> <br />
          <label for="productPV">Preço de Venda: </label> <br />
-         <input type="number" step="0.01" id="productPV" /> <br />
+         <input type="number" step="0.05" id="productPV" /> <br />
          <label for="productCMV">Custo Mercadoria: </label> <br />
-         <input type="number"  step="0.01" id="productCMV" /> <br />
+         <input type="number"  step="0.05" id="productCMV" /> <br />
          <label for="productInformation">Descrição: </label> <br />
          <input type="text" id="productInformation" /> <br />
          <lable for="category">Categoria</lable> <br/>
          <input type="text" id="category" list="categoryList"/> <br/>
          <datalist id="categoryList">
-         </datalist>
+         </datalist><br/>
+         <label for="isHasSideDish">Tem acompanhamento?</label> <br/>
          <select id="isHasSideDish">
             <option value="doNotHave">Não é e não possúi acompanhamento</option>
             <option value="itIs">É um acompanhamento</option>
             <option value="itHas">Tem acompanhamentos</option>
-         </select>
+         </select><br/><br/>
          <label for="sideDishCategory">Nome da categoria de acompanhamento. <br/>
-            <strong> Só coloque se é ou tem acompanhamento </strong>
-         </label>  <br/>
-         <input type="text" id="sideDishCategory" list="sideDishCategory"/> <br />
-         <datalist id="sideDishCategory">
+             Só coloque se é ou tem acompanhamento 
+         </label>  <br/> <br/>
+         <input type="text" id="sideDishCategory" list="sideDishCategoryList"/> <br />
+         <datalist id="sideDishCategoryList">
          </datalist>
          <button type="button" onclick="saveProduct()">Salvar Produto</button>
       </div>

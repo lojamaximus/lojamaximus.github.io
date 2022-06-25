@@ -1,3 +1,9 @@
+/***********
+ * todo: 1- Calcular lucro do dia de acordo com cada tipo de pagamento
+ * 2- Colocar lista de todos os meses que teve pagamento
+ * 3- Na lista dos meses mostra o lucro de cada mês, de acordo com cada tipo de pagamento
+ */
+
 var productsListener = firebase.database().ref('Produtos/');
 var usersListener = firebase.database().ref("ChecarUsuarios/");
 var workersListener = firebase.database().ref("Empregados/");
@@ -5,11 +11,15 @@ var workersListener = firebase.database().ref("Empregados/");
 productsListener.on('value', (snapshot) => {
     snapshot.forEach(function (childSnapshot) {
       let info = childSnapshot.val();
+      if(info.sideDish == "itHas"){
+        sideDishCategoryList[info.sideDishCategory] = info.sideDishCategory;
+      }
       productsList[info.name] = new Product(info.name, info.cmv,
-         info.pv, info.information, info.category);
+         info.pv, info.information, info.category, info.sideDish, info.sideDishCategory);
       categoryList[info.category] = info.category;
     });
     putCategoryList();
+    putSideDishCategoryList();
     displayProductList();
 });
 
@@ -38,6 +48,7 @@ workersListener.on('value', (snapshot) => {
 
 var productsList = {};
 var categoryList = {};
+var sideDishCategoryList = {};
 var possibleWorkers = {};
 var workersList = {};
 
@@ -50,6 +61,15 @@ function putCategoryList(){
   putList("categoryList", list);
 }
 
+function putSideDishCategoryList(){
+  let list = "";
+  for (key in sideDishCategoryList){
+    list += "<option value='"+ sideDishCategoryList[key] +"'></option>";
+  }
+
+  putList("sideDishCategoryList", list);
+}
+
 function displayProductList(){
   let list = " <tr> <th>Nome</th> <th>CMV: Custo Mercadoria</th>";
   list += "<th>Preço de Venda</th> <th>Descrição</th> <th>Categoria</th>";
@@ -58,7 +78,7 @@ function displayProductList(){
     list += "<tr>";
     list += "<th>" + productsList[key].name + "</th>";
     list += "<th> R$ " + productsList[key].cmv.toFixed(2) + "</th>";
-    list += "<th> R$ " + productsList[key].pv + "</th>";
+    list += "<th> R$ " + productsList[key].pv.toFixed(2) + "</th>";
     list += "<th>" + productsList[key].information + "</th>";
     list += "<th>" +  productsList[key].category + "<//th>";
     list += "<th>" + productsList[key].sideDish + "</th>";
