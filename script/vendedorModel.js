@@ -141,9 +141,20 @@ function displaySendList(){
       list += "<th>";
       for( let key2 in sendList[key].productsList){
         list += sendList[key].productsList[key2].name;
-        list += " ( " + sendList[key].productsList[key2].quantity +" ) <br />";
+        list += " ( " + sendList[key].productsList[key2].quantity +" ) <br/> ";
+        if(sendList[key].productsList[key2].sideDishList != null){
+            list += " Acompanhamentos { <br/>";
+            for(let key3 in sendList[key].productsList[key2].sideDishList){
+                list += sendList[key].productsList[key2].sideDishList[key3].name;
+                list += " ( ";
+                list += sendList[key].productsList[key2].sideDishList[key3].quantity;
+                list += " ) <br/>";
+            }
+            list += "} <br/>";
+        }
       }
       list += "</th>";
+
       list += "<th> <button type='button' onclick=\'enviarPedido(\"" + sendList[key].id + "\")\'>"
       list += "PEDIDO ENTREGUE</button></th>";
       list += "</tr>";

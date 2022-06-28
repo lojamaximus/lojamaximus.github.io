@@ -44,6 +44,16 @@ function displayPedidosList(){
       for(key2 in pedidosList[key].productsList){
         list += pedidosList[key].productsList[key2].name;
         list += " ( " + pedidosList[key].productsList[key2].quantity +" ) <br />";
+        if(pedidosList[key].productsList[key2].sideDishList != null){
+            list += " Acompanhamentos { <br/>";
+            for(let key3 in pedidosList[key].productsList[key2].sideDishList){
+                list += pedidosList[key].productsList[key2].sideDishList[key3].name;
+                list += " ( ";
+                list += pedidosList[key].productsList[key2].sideDishList[key3].quantity;
+                list += " ) <br/>";
+            }
+            list += "} <br/>";
+        }
       }
       list += "</th>";
       list += "<th> <button type='button' onclick=\'enviarPedido(\"" + pedidosList[key].id + "\")\'>"

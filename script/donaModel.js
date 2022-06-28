@@ -80,7 +80,7 @@ function displayProductList(){
     list += "<th> R$ " + productsList[key].cmv.toFixed(2) + "</th>";
     list += "<th> R$ " + productsList[key].pv.toFixed(2) + "</th>";
     list += "<th>" + productsList[key].information + "</th>";
-    list += "<th>" +  productsList[key].category + "<//th>";
+    list += "<th>" +  productsList[key].category + "</th>";
     list += "<th>" + productsList[key].sideDish + "</th>";
     list += "<th>" + productsList[key].sideDishCategory + "</th>";
     list += "</tr>";
@@ -100,15 +100,31 @@ function deleteWorker(id){
 }
 
 function addWorker(id){
-  let job = document.getElementById("jobTo" + id).value;
+  let job = getJobList(id);
   let worker = new Worker(possibleWorkers[id].name, id, job);
   let reference = "Empregados/" + id;
   firebase.database().ref(reference).set(worker);
   deleteUser(id);
 }
 
+function getJobList(workerId){
+  let id = "workXY";
+  let job = {};
+  for(let i = 1; i < 5; i++){
+    id = id.replace("X", i);
+    id = id.replace("Y", workerId);
+    let check = document.getElementById(id);
+    if(check.checked){
+      job[check.value] = check.value;
+    }
+    id = "workXY";
+  }
+  return job;
+}
+
 function updateWorker(id){
-  let job = document.getElementById("changeTo" + id).value;
+  let job = getJobList(id);
+  
   let worker = new Worker(workersList[id].name, id, job);
   let reference = "Empregados/" + id;
   firebase.database().ref(reference).set(worker);
@@ -120,12 +136,16 @@ function displayUsersList(){
     for( key in possibleWorkers){
       list += "<tr>";
       list += "<th>" + possibleWorkers[key].name + "</th>";
-      list += "<th> <select id='jobTo" + possibleWorkers[key].id + "'>";
-      list += "<option value='vendedor'>Vendedor(a)</option>";
-      list += "<option value='caixa'>Caixa</option>";
-      list += "<option value='dona'>Administrador(a)</option>";
-      list += "<option value='cozinha'>Cozinheiro(a)</option>";
-      list += "</select></th>";
+      list += "<th> ";
+      list += "<label for='work1'> Vendedor(a): </label>"
+      list += "<input type='checkbox' id='work1"+ possibleWorkers[key].id +"' value='vendedor' /> <br/>" ;
+      list += "<label for='work2'> Caixa: </label>"
+      list += "<input type='checkbox' id='work2"+ possibleWorkers[key].id + "' value='caixa' /><br/>" ;
+      list += "<label for='work3'> Cozinheiro(a): </label>"
+      list += "<input type='checkbox' id='work3"+ possibleWorkers[key].id +"' value='cozinha' /><br/>" ;
+      list += "<label for='work4'> Administrador: </label>"
+      list += "<input type='checkbox' id='work4"+ possibleWorkers[key].id +"' value='dona' /><br/>" ;
+      list += "</th>";
       list += "<th> <button type='button' onclick=\'addWorker(\"" + possibleWorkers[key].id + "\")\'>"
       list += "CONFIRMAR EMPREGO</button></th>";
       list += "<th> <button type='button' onclick=\'deleteUser(\"" + possibleWorkers[key].id +"\")\'>"
@@ -139,16 +159,24 @@ function displayUsersList(){
 function displayWorkersList(){
   let list = " <tr> <th>Nome</th> <th> Emprego Atual </th> <th>Escolher Emprego</th>";
   list += "<th>Mudar Emprego</th> <th>Excluir</th></tr>";
-  for( key in workersList){
+  for( let key in workersList){
     list += "<tr>";
     list += "<th>" + workersList[key].name + "</th>";
-    list += "<th> " + workersList[key].emprego + "</th> "
-    list += "<th> <select id='changeTo" + workersList[key].id + "'>";
-    list += "<option value='vendedor'>Vendedor(a)</option>";
-    list += "<option value='caixa'>Caixa</option>";
-    list += "<option value='dona'>Administrador(a)</option>";
-    list += "<option value='cozinha'>Cozinheiro(a)</option>";
-    list += "</select></th>";
+    list += "<th> " ;
+    for(let key2 in workersList[key].emprego){
+      list += "<p> " + workersList[key].emprego[key2] + "</p>";
+    }
+    list += "</th> ";
+    list += "<th> ";
+    list += "<label for='work1'> Vendedor(a): </label>"
+    list += "<input type='checkbox' id='work1"+ workersList[key].id +"' value='vendedor' /> <br/>" ;
+    list += "<label for='work2'> Caixa: </label>"
+    list += "<input type='checkbox' id='work2"+ workersList[key].id + "' value='caixa' /><br/>" ;
+    list += "<label for='work3'> Cozinheiro(a): </label>"
+    list += "<input type='checkbox' id='work3"+ workersList[key].id +"' value='cozinha' /><br/>" ;
+    list += "<label for='work4'> Administrador: </label>"
+    list += "<input type='checkbox' id='work4"+ workersList[key].id +"' value='dona' /><br/>" ;
+    list += "</th>";
     list += "<th> <button type='button' onclick=\'updateWorker(\"" + workersList[key].id + "\")\'>"
     list += "MUDAR</button></th>";
     list += "<th> <button type='button' onclick=\'deleteWorker(\"" + workersList[key].id +"\")\'>"

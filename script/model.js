@@ -13,13 +13,12 @@ class Worker{
     }
 }
 
-var typeOfUsers = {
+/*
     "vendedor" : 'vendedor', //Can only send new orders; change the order they received; Put order as fulfilled
     "caixa" : 'caixa', //Can only check the orders and put their payment type 
     "dona" : 'dona', //Can check the money won and put the others users job
     "cozinha" : 'cozinha' //Can check which orders was not fulfilled yet
-    
-}
+*/
 
 class Product{
     //cmv = custo mercadoria vendida
@@ -108,6 +107,7 @@ firebase.auth().onAuthStateChanged(user => {
         checkUserJob(user);    
       } else{
         isUserOnTheRightPage(user);
+        createMenu(user);
       }
       
       return;
@@ -134,9 +134,12 @@ function checkUserJob(user){
     databaseRef.ref(reference).once('value', (snapshot) => {
         try{
             let job = snapshot.val().emprego;
-            let path = "$.html";
-            path = path.replace("$", job);
-            window.location.replace(path);
+            for(let key in job){
+                let path = "$.html";
+                path = path.replace("$", job[key]);
+                window.location.replace(path);
+                break;
+            }
         }catch{
             saveUser();
         }
@@ -148,21 +151,28 @@ function isUserOnTheRightPage(user){
     databaseRef.ref(reference).once('value', (snapshot) => {
         try{
             let job = snapshot.val().emprego;
-            let checkPath = '/$.html';
-            checkPath = checkPath.replace("$", job);
-            if( window.location.pathname !== checkPath){
+            let path = window.location.pathname;
+            let search = path.split("/");
+            path = search[search.length - 1];
+            search = path.split(".");
+            path = search[0];
+            let check = job[path];
+            if(check == null){
                 userOnWrongPage();
             }
         }catch{
-            userOnWrongPage();
-        }
+           userOnWrongPage();
+       }
 
     });
 }
 
 function isUserOnCheckJob(){
     let result = false;
-    if( window.location.pathname === '/checkjob.html'){
+    let path = window.location.pathname;
+    let search = path.split("/");
+    path = search[search.length - 1];
+    if( path === 'checkjob.html'){
       result = true;
     }
     return result;
@@ -186,4 +196,24 @@ function appearTag(id){
 
 function getListSize(list){
     return Object.keys(list).length;
+}
+
+function createMenu(user){
+    let reference = "Empregados/" + user.uid;
+    databaseRef.ref(reference).once('value', (snapshot) => {
+        try{
+            let job = snapshot.val().emprego;
+            list = "<table> <tr>";
+            for(let key in job){
+                list += "<th>";
+                list += "<a href='" + key + ".html'>  " + key;
+                list += "  </a>"
+                list += "</th>";
+            }
+            list += "</tr></table>";
+            putList("menu",list);
+        }catch{
+            userOnWrongPage();
+        }
+    });
 }
