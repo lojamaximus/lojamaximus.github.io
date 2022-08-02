@@ -194,6 +194,19 @@ function appearTag(id){
     document.getElementById(id).classList.remove('hide');
 }
 
+function hasHide(id){
+    return document.getElementById(id).classList.contains('hide');
+}
+
+function openOrHide(id){
+    if(hasHide(id)){
+        appearTag(id);
+        return;
+    }
+
+    hideTag(id);
+}
+
 function getListSize(list){
     return Object.keys(list).length;
 }
