@@ -108,7 +108,21 @@
 
       <br />
       <div>
-        <button onclick="getDayProfit()"> Lucro do dia </button>
+        <h2> Lucros Gerados</h2>
+        <button onclick="getDayProfit()"> Lucro do dia atual</button>
+        <br />
+        <input type="date" id="givenDay" />
+        <button onclick="getGivenDayProfit()"> Lucro de data específica</button>
+        <br />
+        <input type="month" id="givenMonth" />
+        <button onclick="getGivenMonthProfit()"> Lucro de mês específico</button>
+        <br />
+        <table id="dayProfit">
+
+        </table>
+
+        <h2> Lucro Total </h2>
+        <p id="totalProfit"></p>
       </div>
    </body>
 </html>

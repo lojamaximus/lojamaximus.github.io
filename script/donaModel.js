@@ -51,42 +51,128 @@ var productsList = {};
 var categoryList = {};
 var sideDishCategoryList = {};
 var possibleWorkers = {};
-var profit = {};
+var profitList = {};
+var pedidosList = {};
 var workersList = {};
 
 function getPructProfit(productName){
     return productsList[productName].lucroBruto();
 }
 
-function getProfit(date){
+function displayTotalProfit(profit){
+  let result = "R$ " + profit.toFixed(2);
+  document.getElementById("totalProfit").innerHTML = result;
+}
+
+function getProfit(date, displayDay){
     let reference = "Pedidos/$";
     reference = reference.replace("$", date);
-    /*  databaseRef.ref(reference).once('value', (snapshot) => {
-    snapshot.forEach(function (childSnapshot) {
-      let info = childSnapshot.val().info;
 
-      if(info.teacherId === teacherCurrent.uid){
-        studentsList[info.id] = new Student(info.name, info.id, info.newAudio);
-      }
-    });
-    createStudentList();
-  });*/
     firebase.database().ref(reference).once('value', (snapshot) => {
-        snapshot.forEach(function (childSnapshot) {
-            console.log(childSnapshot.val());
-            //console.log(childSnapshot.val().productsList);
+        for(let key in pedidosList){
+          delete pedidosList[key];
+        }
 
-            for (let key in childSnapshot.val().productsList){
-                let name = childSnapshot.val().productsList[key].name;
-                console.log(getPructProfit(name));
-                /*console.log(childSnapshot.val().productsList[key].name);
-                console.log("CMV PRODUTO: ");
-                console.log(productsList[childSnapshot.val().productsList[key].name].cmv)
-                console.log("LUCRO: ")
-                console.log(productsList[childSnapshot.val().productsList[key].name].lucroBruto())*/
+        let totalProfit = 0;
+        snapshot.forEach(function (childSnapshot) {
+          let info = childSnapshot.val();
+          pedidosList[info.id] = new Pedidos( info.sellerName,
+            info.clientName, info.paymentType, info.productsList, 
+            info.paymentTime, info.totalValue, info.id, info.sent, info.withClient);
+
+          let soldList =  info.productsList;
+          let profit = 0;
+          for (let key in soldList){
+            let size = soldList[key].quantity;
+            let name = soldList[key].name;
+            for (let i = 0; i < size; i++){
+              profit += getPructProfit(name);
             }
+          }
+          profitList[info.id] = profit;
+          totalProfit += profit;
         });
+        if(displayDay){
+          displayDayProfit();
+        }
+        displayTotalProfit(totalProfit);
+        console.log(profitList);
     });
+}
+
+function displayDayProfit(){
+  let list = " <tr> <th>Pedido do Cliente</th> <th>Lista de Produtos</th>";
+  list += "<th>Preço Total</th> <th>Metodo De Pagamento</th> <th>Lucro</th></tr>";
+  for(let key in pedidosList){
+    list += "<tr>";
+    list += "<th>" + pedidosList[key].clientName + "</th>";
+    list += "<th>";
+    for(let key2 in pedidosList[key].productsList){
+      list += pedidosList[key].productsList[key2].name;
+      list += " ( " + pedidosList[key].productsList[key2].quantity +") <br />";
+      if(pedidosList[key].productsList[key2].sideDishList != null){
+        list += " Acompanhamentos { <br/>";
+        for(let key3 in pedidosList[key].productsList[key2].sideDishList){
+            list += pedidosList[key].productsList[key2].sideDishList[key3].name;
+            list += " ( ";
+            list += pedidosList[key].productsList[key2].sideDishList[key3].quantity;
+            list += " ) <br/>";
+        }
+        list += "} <br/>";
+      }
+    }
+    list += "</th>";
+    list += "<th> R$ " + pedidosList[key].totalValue.toFixed(2) + "</th>";
+    list += "<th> ";
+    for(let key3 in pedidosList[key].paymentType){
+      list += "R$ ";
+      list += pedidosList[key].paymentType[key3].pricePaid.toFixed(2);
+      list += " em ";
+      list += pedidosList[key].paymentType[key3].name;
+      list += "<br />";
+    }
+
+    list += "</th>";
+    list += "<th> R$ "
+    list += profitList[key].toFixed(2);
+    list += "</th>";
+    list += "</tr>";
+  }
+
+  putList("dayProfit", list);
+}
+
+function getGivenDayProfit(){
+  let givenDate = document.getElementById("givenDay").value;
+  givenDate = givenDate.replaceAll("-", "/");
+  let date = "";
+  for(let i = 0; i < givenDate.length; i++){
+      if(i == 5 || i == 8){
+        if(givenDate[i] != "0"){
+          date += givenDate[i];
+        }
+      }else{
+        date += givenDate[i];
+      }
+  }
+  getProfit(date, true);
+  console.log(date);
+}
+
+function getGivenMonthProfit(){
+  let givenDate = document.getElementById("givenMonth").value;
+  givenDate = givenDate.replaceAll("-", "/");
+  let date = "";
+  for(let i = 0; i < givenDate.length; i++){
+      if(i == 5){
+        if(givenDate[i] != "0"){
+          date += givenDate[i];
+        }
+      }else{
+        date += givenDate[i];
+      }
+  }
+  console.log(date);
 }
 
 function getDayProfit(){
@@ -94,7 +180,7 @@ function getDayProfit(){
     let referenceDate = date.getFullYear() +"/" + (date.getMonth() + 1);
     referenceDate += "/" + date.getDate();
 
-    getProfit(referenceDate);
+    getProfit(referenceDate, true);
 }
 
 function putCategoryList(){
