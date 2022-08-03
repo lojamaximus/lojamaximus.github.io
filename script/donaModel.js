@@ -8,6 +8,7 @@ var productsListener = firebase.database().ref('Produtos/');
 var usersListener = firebase.database().ref("ChecarUsuarios/");
 var workersListener = firebase.database().ref("Empregados/");
 
+
 productsListener.on('value', (snapshot) => {
     snapshot.forEach(function (childSnapshot) {
       let info = childSnapshot.val();
@@ -50,7 +51,51 @@ var productsList = {};
 var categoryList = {};
 var sideDishCategoryList = {};
 var possibleWorkers = {};
+var profit = {};
 var workersList = {};
+
+function getPructProfit(productName){
+    return productsList[productName].lucroBruto();
+}
+
+function getProfit(date){
+    let reference = "Pedidos/$";
+    reference = reference.replace("$", date);
+    /*  databaseRef.ref(reference).once('value', (snapshot) => {
+    snapshot.forEach(function (childSnapshot) {
+      let info = childSnapshot.val().info;
+
+      if(info.teacherId === teacherCurrent.uid){
+        studentsList[info.id] = new Student(info.name, info.id, info.newAudio);
+      }
+    });
+    createStudentList();
+  });*/
+    firebase.database().ref(reference).once('value', (snapshot) => {
+        snapshot.forEach(function (childSnapshot) {
+            console.log(childSnapshot.val());
+            //console.log(childSnapshot.val().productsList);
+
+            for (let key in childSnapshot.val().productsList){
+                let name = childSnapshot.val().productsList[key].name;
+                console.log(getPructProfit(name));
+                /*console.log(childSnapshot.val().productsList[key].name);
+                console.log("CMV PRODUTO: ");
+                console.log(productsList[childSnapshot.val().productsList[key].name].cmv)
+                console.log("LUCRO: ")
+                console.log(productsList[childSnapshot.val().productsList[key].name].lucroBruto())*/
+            }
+        });
+    });
+}
+
+function getDayProfit(){
+    const date = new Date();
+    let referenceDate = date.getFullYear() +"/" + (date.getMonth() + 1);
+    referenceDate += "/" + date.getDate();
+
+    getProfit(referenceDate);
+}
 
 function putCategoryList(){
   let list = "";
