@@ -64,6 +64,34 @@ function displayTotalProfit(profit){
   document.getElementById("totalProfit").innerHTML = result;
 }
 
+function getMonthProfit(date){
+  let reference = "Pedidos/$";
+  reference = reference.replace("$", date);
+
+  firebase.database().ref(reference).once('value', (snapshot) => {
+    for(let key in pedidosList){
+      delete pedidosList[key];
+    }
+    let totalProfit = 0;
+    snapshot.forEach(function (childSnapshot) {
+      let infoList = childSnapshot.val();
+      let profit = 0;
+      for(let key in infoList){
+        let soldList =  infoList[key].productsList;
+        for (let key2 in soldList){
+          let size = soldList[key2].quantity;
+          let name = soldList[key2].name;
+          for (let i = 0; i < size; i++){
+            profit += getPructProfit(name);
+          }
+        }
+      }
+      totalProfit += profit;
+    });
+    displayTotalProfit(totalProfit);
+});
+}
+
 function getProfit(date, displayDay){
     let reference = "Pedidos/$";
     reference = reference.replace("$", date);
@@ -96,7 +124,6 @@ function getProfit(date, displayDay){
           displayDayProfit();
         }
         displayTotalProfit(totalProfit);
-        console.log(profitList);
     });
 }
 
@@ -172,6 +199,7 @@ function getGivenMonthProfit(){
         date += givenDate[i];
       }
   }
+  getMonthProfit(date);
   console.log(date);
 }
 
