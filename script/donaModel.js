@@ -183,6 +183,13 @@ function getDayProfit(){
     getProfit(referenceDate, true);
 }
 
+function removeProduct(productName){
+   let reference = "Produtos/" + productName;
+   firebase.database().ref(reference).remove();
+   delete productsList[productName];
+   displayProductList();
+}
+
 function putCategoryList(){
   let list = "";
   for (key in categoryList){
@@ -202,9 +209,10 @@ function putSideDishCategoryList(){
 }
 
 function displayProductList(){
-  let list = " <tr> <th>Nome</th> <th>CMV: Custo Mercadoria</th>";
+  let list = " <tr> <th>Nome</th> <th>CMV</th>";
   list += "<th>Preço de Venda</th> <th>Descrição</th> <th>Categoria</th>";
-  list += " <th>Acompanhamento</th> <th>Categoria de acompanhamento</th> </tr>"
+  list += " <th>Acompanhamento</th> <th>Categoria de acompanhamento</th>";
+  list += " <th> Tirar Produto</th> </tr>";
   for( key in productsList){
     list += "<tr>";
     list += "<th>" + productsList[key].name + "</th>";
@@ -214,6 +222,10 @@ function displayProductList(){
     list += "<th>" +  productsList[key].category + "</th>";
     list += "<th>" + productsList[key].sideDish + "</th>";
     list += "<th>" + productsList[key].sideDishCategory + "</th>";
+    list += "<th>"
+    list += "<button type='button' onclick=\'removeProduct(\"";
+    list += productsList[key].name + "\")\'> REMOVER </button>";
+    list += "</th>"
     list += "</tr>";
   }
 
